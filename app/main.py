@@ -7,7 +7,7 @@ from typing import Any
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, Response
 from fastapi.templating import Jinja2Templates
 
 from .supabase_client import get_supabase
@@ -39,6 +39,12 @@ def home(request: Request) -> HTMLResponse:
             "app_name": "MyStoreke",
         },
     )
+
+
+# Some platforms health-check with HEAD / (Render does by default).
+@app.head("/", include_in_schema=False)
+def home_head() -> Response:
+    return Response(status_code=200)
 
 
 @app.get("/healthz")
