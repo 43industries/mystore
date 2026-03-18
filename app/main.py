@@ -70,7 +70,7 @@ def create_listing(payload: dict[str, Any]) -> dict[str, Any]:
 def list_drivers(limit: int = 50) -> dict[str, Any]:
     try:
         sb = get_supabase()
-        res = sb.table("drivers").select("*").limit(limit).execute()
+        res = sb.table("driver_applications").select("*").limit(limit).execute()
         return {"data": res.data}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -80,7 +80,7 @@ def list_drivers(limit: int = 50) -> dict[str, Any]:
 def create_driver(payload: dict[str, Any]) -> dict[str, Any]:
     try:
         sb = get_supabase()
-        res = sb.table("drivers").insert(payload).execute()
+        res = sb.table("driver_applications").insert(payload).execute()
         return {"data": res.data}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
