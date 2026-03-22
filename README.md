@@ -1,96 +1,63 @@
-# MyHost
+# MyStoreKE (`mystore`)
 
-Find your perfect stay — discover unique places to stay in the countryside. Connecting countryside homeowners with travelers.
+Find your perfect stay — discover unique places to stay in the countryside. This repo ships a **Next.js** frontend with **Supabase**-backed API routes and an optional **FastAPI** server in the `app/` Python package.
 
 ## Tech stack
 
-- **Next.js 16** (App Router)
-- **TypeScript**
-- **Tailwind CSS**
-- **FastAPI (Python)** (added)
+- **Next.js 16** (App Router) — UI and `/api/*` routes live under **`src/app/`**
+- **TypeScript** & **Tailwind CSS**
+- **Supabase** for listings and driver applications
+- **FastAPI (Python)** — `app/main.py` (same folder name as the Python package; **not** Next.js routes)
 
-## Getting started
+## Important: two different `app` folders
+
+- **`src/app/`** — Next.js App Router (pages, layouts, `src/app/api/*`). This is what Vercel builds.
+- **`app/`** (at repo root) — Python package only (`main.py`, `supabase_client.py`, …). Do not put Next.js `page.tsx` / `layout.tsx` here, or they will not be used when `src/app` exists.
+
+## Getting started (Next.js)
 
 ```bash
-# Install dependencies (if needed)
 npm install
-
-# Run development server
+cp .env.example .env.local
+# Fill SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY from Supabase → Settings → API
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+Open [http://localhost:3000](http://localhost:3000).
 
-## Python version (FastAPI)
+## Python (FastAPI)
 
-This workspace also includes a Python backend you can run instead of Node.
+1. Copy `.env.example` to `.env` and set `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY`.
+2. Install deps: `python -m pip install -r requirements.txt`
+3. Run: `python -m uvicorn app.main:app --reload --port 8000`
 
-1. Create env file:
-   - Copy `.env.example` to `.env` and fill `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY`
-2. Install Python deps:
-
-```bash
-python -m pip install -r requirements.txt
-```
-
-If you prefer `pip` directly from `pyproject.toml`:
-
-```bash
-python -m pip install .
-```
-
-3. Run the server:
-
-```bash
-python -m uvicorn app.main:app --reload --port 8000
-```
-
-Open `http://localhost:8000` and `http://localhost:8000/docs`.
+Open [http://localhost:8000](http://localhost:8000) and [http://localhost:8000/docs](http://localhost:8000/docs).
 
 ## Scripts
 
-- `npm run dev` — start dev server
-- `npm run build` — build for production
+- `npm run dev` — Next dev server
+- `npm run build` — production build
 - `npm run start` — run production build locally
-- `npm run lint` — run ESLint
+- `npm run lint` — ESLint
 
 ## Deploy on Vercel
 
-1. Push this repo to GitHub: `https://github.com/43industries/myhost`
-2. Go to [vercel.com](https://vercel.com) and sign in with GitHub.
-3. Click **Add New** → **Project** and import `43industries/myhost`.
-4. Deploy. Vercel will build and host the site.
-
-To redeploy, push to the connected branch (e.g. `main`).
+1. Import **[43industries/mystore](https://github.com/43industries/mystore)** (not `myhost`).
+2. **Root Directory** — repository root (default).
+3. **Environment Variables** — add from `.env.example`: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, and optionally `NEXT_PUBLIC_BASE_URL` (your production URL, e.g. `https://mystoreke-com.vercel.app`).
+4. Deploy. **Node** should be **20.x** (see `engines` in `package.json`).
 
 ## Project structure
 
-- `src/app/page.tsx` — main landing page
+- `src/app/page.tsx` — main landing page (listings from Supabase)
 - `src/app/layout.tsx` — root layout and metadata
-- `src/app/globals.css` — global styles and CSS variables
-- `app/main.py` — FastAPI entrypoint (Python)
+- `src/app/globals.css` — global styles
+- `src/app/api/*` — Next.js API routes
+- `app/main.py` — FastAPI entrypoint
 - `templates/index.html` — Python landing page
+- `supabase-schema.sql` — database schema
 
-## Supabase database
+## Supabase
 
-This project is ready to use Supabase for real listings and driver applications:
-
-- Database schema: see `supabase-schema.sql` (run it once in the Supabase SQL editor).
-- Server client: `src/lib/supabaseServer.ts` (reads `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`).
-
-For **local development**:
-
-1. Copy `.env.local.example` to `.env.local`.
-2. In Supabase, create a project and run `supabase-schema.sql`.
-3. From Supabase → **Settings → API**, copy:
-   - `SUPABASE_URL`
-   - `service_role` key into `SUPABASE_SERVICE_ROLE_KEY` (keep this secret, server-side only).
-4. Run `npm run dev` and test `/api/listings` and `/api/drivers`.
-
-For **Vercel deployment**:
-
-1. In your Vercel project → **Settings → Environment Variables**, add:
-   - `SUPABASE_URL`
-   - `SUPABASE_SERVICE_ROLE_KEY`
-   - `NEXT_PUBLIC_BASE_URL` = your production URL (e.g. `https://mystoreke-com.vercel.app`).
-2. Redeploy from Vercel so the new env vars are picked up.
+- Run `supabase-schema.sql` once in the Supabase SQL editor.
+- Server-side client: `src/lib/supabaseServer.ts` (`SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`).
