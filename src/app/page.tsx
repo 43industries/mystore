@@ -63,8 +63,16 @@ export default async function HomePage() {
     <main className="min-h-screen">
       <header className="sticky top-0 z-50 border-b border-zinc-800/80 bg-zinc-950/90 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-4">
-          <a href="/" className="text-sm font-semibold tracking-tight text-zinc-100">
-            MyStoreKE
+          <a
+            href="/"
+            className="flex items-center gap-2 text-sm font-semibold tracking-tight text-zinc-100"
+          >
+            <img
+              src="/log.png"
+              alt="MyStoreKE"
+              className="h-7 w-7 object-contain"
+            />
+            <span>MyStoreKE</span>
           </a>
           <nav
             className="flex flex-wrap items-center justify-end gap-3 text-xs font-medium text-zinc-400"
